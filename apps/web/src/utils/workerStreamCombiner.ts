@@ -261,12 +261,22 @@ function drawCameraOverlay(
         ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
     } else {
         const cr = 12;
+        const targetAspect = w / h;
+        const srcAspect = srcW / srcH;
+        let sx = 0, sy = 0, sWidth = srcW, sHeight = srcH;
+        if (srcAspect > targetAspect) {
+            sWidth = srcH * targetAspect;
+            sx = (srcW - sWidth) / 2;
+        } else {
+            sHeight = srcW / targetAspect;
+            sy = (srcH - sHeight) / 2;
+        }
         ctx.save();
         ctx.beginPath();
         ctx.roundRect(x, y, w, h, cr);
         ctx.clip();
         ctx.translate(x + w, y); ctx.scale(-1, 1);
-        ctx.drawImage(video, 0, 0, srcW, srcH, 0, 0, w, h);
+        ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, w, h);
         ctx.restore();
         ctx.strokeStyle = '#fff'; ctx.lineWidth = 4;
         ctx.beginPath(); ctx.roundRect(x, y, w, h, cr); ctx.stroke();
